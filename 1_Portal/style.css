@@ -1,0 +1,48 @@
+#content{
+padding-top: 18em;
+padding-bottom: 308px;
+background-image: url(images/5.jpg);
+background-attachment: fixed;
+background-size:cover;
+}
+
+.card{
+    width: 374px;
+    margin-left: 740px;
+    box-shadow: 0 0 16px 14px rgba(0,0,0,8%);
+}
+
+.btn.btn-primary{
+    margin-top: 15px;
+    width: 342px;
+    margin-left: 15px;
+    margin-bottom: 10px;
+}
+p{
+    margin-left:15px;
+}
+p a{
+    text-decoration: none;
+}
+label a{
+    text-decoration: none;
+    margin-left: 88px;
+}
+
+#exampleFormControlInput1{
+    width: 342px;
+    margin-bottom: 10px;
+}
+
+.checkbox{
+    margin-top: 10px;
+}
+
+.card-header{
+ font-weight: bold;
+ text-align: center;
+}
+
+img{
+    margin-left: 25px;
+}
