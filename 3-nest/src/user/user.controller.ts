@@ -18,27 +18,23 @@ export class UserController {
     }
 
     @Get("/:id")
-    displayID(@Param('id') num:string){
-        var parsedNum:number = parseInt(num);
-        return this.userService.displayID(parsedNum);
+    displayID(@Param('id') id:string){
+        return this.userService.displayID(id);
     }
 
     @Put("/:id")
-    editUser(@Body() body:User, @Param('id') num:string){
-        var parsedNum:number = parseInt(num);
-        return this.userService.editUser(body, parsedNum);
+    editUser(@Body() body:User, @Param('id') id:string){
+        return this.userService.editUser(body, id);
     }
 
     @Patch("/:id")
-    editUserPatch(@Body() body:User, @Param('id') num:string){
-        var parsedNum:number = parseInt(num);
-        return this.userService.editUser(body, parsedNum);
+    editUserPatch(@Body() body:User, @Param('id') id:string){
+        return this.userService.editUserPatch(body, id);
     }
 
     @Delete("/:id")
-    deleteUser(@Param('id') num:string){
-        var parsedNum:number = parseInt(num);
-        return this.userService.deleteUser(parsedNum);
+    deleteUser(@Body() body:User, @Param('id') id:string){
+        return this.userService.deleteUser(body, id);
     }
 
     @Post("/login")

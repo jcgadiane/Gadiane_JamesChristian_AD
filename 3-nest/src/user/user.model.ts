@@ -1,23 +1,45 @@
+import { CRUDReturn } from './user.resource/crud_return.interface';
+import { Helper } from './user.resource/helper';
 export class User {
-    private id: number;
-    private username: string;
-    private password: string;
-    private fname: string;
-    private lname: string;
+  public id: string;
+  public name: string;
+  public age: number;
+  public email: string;
+  public password: string;
 
+  constructor(name: string, age: number, email: string, password: string) {
+    this.id = Helper.generateUID();
+    this.name = name;
+    this.age = age;
+    this.email = email;
+    this.password = password;
+  }
 
-    constructor(id:number,username:string,password:string,fname:string,lname:string){
-        this.id=id;
-        this.username=username;
-        this.password = password;
-        this.fname = fname;
-        this.lname = lname;
+  login(password: string): CRUDReturn {
+    try {
+      if (this.password === password) {
+        return { success: true, data: this.toJson() };
+      } else {
+        throw new Error(`${this.email} login fail, password does not match`);
+      }
+    } catch (error) {
+      return { success: false, data: error.message };
     }
+  }
 
-    displayUser(){
-        console.log(`ID: ${this.id}`);
-        console.log(`Username: ${this.username}`);
-        console.log(`First Name: ${this.fname}`);
-        console.log(`Last Name: ${this.lname}`);
-    }
+  log() {
+    console.log(this.toJson());
+  }
+
+
+  toJson() {    
+    return {
+        id:this.id,
+        name:this.name,
+        age:this.age,
+        email:this.email
+    };
+  }
+
+
 }
