@@ -1,0 +1,26 @@
+<div id="content">
+    <div class="card" style="width: 23.5rem">
+        <div class="card-header">MEMBER LOGIN</div>
+        <div class="card-body">
+            <div class="col-sm-10">
+                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" [formControl]="fcEmail" />
+            </div>
+            <input type="password" class="form-control" id="inputPassword" placeholder="Password" [formControl]="fcPassword" />
+            <div class="checkbox">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                <label class="form-check-label" for="flexCheckDefault">Remember me</label>
+                <label class="form-check-label" for="flexCheckDefault"><a href="">Forgot password?</a></label>
+            </div>
+        </div>
+        <div class= "buttons">
+        <a class="btn btn-primary" (click)="login()">Sign In</a>
+        <a class="btn btn-primary" (click)="nav('register')">Register</a>
+    </div></div>
+</div>
+<footer>
+    <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05)">
+        <a href="facebook.com/"><img src="../assets/images/facebook.png" /></a>
+        <a href="twitter.com/"><img src="../assets/images/twitter.png" /></a>
+        <a href="instagram.com/"><img src="../assets/images/instagram.png" /></a>
+    </div>
+</footer>

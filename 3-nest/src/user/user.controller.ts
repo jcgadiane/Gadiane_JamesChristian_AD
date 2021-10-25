@@ -33,8 +33,8 @@ export class UserController {
     }
 
     @Delete("/:id")
-    deleteUser(@Body() body:User, @Param('id') id:string){
-        return this.userService.deleteUser(body, id);
+    deleteUser(@Param('id') id:string){
+        return this.userService.deleteUser(id);
     }
 
     @Post("/login")

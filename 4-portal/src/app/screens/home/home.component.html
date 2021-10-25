@@ -1,0 +1,30 @@
+<div id="content">
+    <div class="card" style="width: 23.5rem">
+        <div class="card-header">MEMBER HOME</div>
+        <div class="card-body">
+            <ol class="list-group list-group-numbered" style="overflow:auto; height: 420px;" >
+                <div *ngFor="let user of users.data">
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold">ID: </div>{{user.id}}
+                        <div class="fw-bold">Name:</div> {{user.name}}
+                        <div class="fw-bold">Age:</div> {{user.age}}
+                        <div class="fw-bold">Email:</div> {{user.email}}
+                    </div>
+                </li>
+            </div>
+            </ol>
+            <div class="buttons">
+                <a class="btn btn-primary" (click)="nav('login')">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+<footer>
+    <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05)">
+        <a href="facebook.com/"><img src="../assets/images/facebook.png" /></a>
+        <a href="twitter.com/"><img src="../assets/images/twitter.png" /></a>
+        <a href="instagram.com/"><img src="../assets/images/instagram.png" /></a>
+    </div>
+</footer>
+

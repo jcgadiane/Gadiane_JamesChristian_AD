@@ -6,14 +6,19 @@ import { User } from './user.model';
 import { throws } from 'assert';
 import { stringify } from 'querystring';
 import e from 'express';
+import * as admin from 'firebase-admin';
+import { catchError } from 'rxjs';
+import { doc } from 'prettier';
 
 @Injectable()
 export class UserService {
   private users: Map<string, User> = new Map<string, User>();
+  private DB = admin.firestore();
 
   constructor() {
     this.users = Helper.populate();
   }
+
   addUser(newUser: any): CRUDReturn {
     try {
       var validBody: { valid: boolean; data: string } =
@@ -55,49 +60,74 @@ export class UserService {
     }
   }
 
-  displayAll(): CRUDReturn {
+  async displayAll(): Promise<CRUDReturn> {
     var results: Array<any> = [];
-    for (const user of this.users.values()) {
-      results.push(user.toJson());
+    try{
+      var dbData: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData> = await this.DB.collection("users").get();
+      dbData.forEach((doc)=>{
+        if(doc.exists){
+          results.push({id: doc.id, name: doc.data()['name'], age: doc.data()['age'], email: doc.data()['email']
+        });
+        }
+      });
+      return {
+        success: true,
+        data: results
+  }
+}catch (e) {
+      return{
+        success: false,
+        data: e
+      }
     }
-    return {
-      success: results.length > 0,
-      data: results,
-    };
   }
 
-  displayID(id: string): CRUDReturn {
-    if (this.users.has(id)) {
-      return { success: true, data: this.users.get(id).toJson() };
-    } else {
+  async displayID(id: string): Promise<CRUDReturn> {
+    try {
+      var result = await this.DB.collection('users').doc(id).get();
+      if (result.exists) {
+        return {
+          success: true,
+          data: result.data(),
+        };
+      } else {
+        return {
+          success: false,
+          data: `User ${id} does not exist in database!`,
+        };
+      }
+    } catch (error) {
       return {
         success: false,
-        data: `User ${id} is not in database`,
+        data: error,
       };
     }
   }
 
-  editUser(newValue: any, id: string) {
+  async editUser(newValue: any, id: string) {
     try {
+      var result = await this.DB.collection('users').doc(id).get();
       var validBody: { valid: boolean; data: string } =
         Helper.validBodyPut(newValue);
       if (this.missingAttribute(newValue)) {
         if (validBody.valid) {
           if (!this.emailUpdate(newValue.email, id)) {
-            for (const [string, user] of this.users.entries()) {
-              if (this.users.has(id)) {
-                user['name'] = newValue.name;
-                user['age'] = newValue.age;
-                user['email'] = newValue.email;
-                user['password'] = newValue.password;
-                return {
-                  success: true,
-                  data: user.toJson(),
-                };
+              if (result.exists) {
+                  this.DB.collection("users").doc(id).update({
+                    "name": newValue.name
+                  });
+                  this.DB.collection("users").doc(id).update({
+                  "age": newValue.age
+                });
+                this.DB.collection("users").doc(id).update({
+                  "email": newValue.email
+                });
+                 this.DB.collection("users").doc(id).update({
+                  "password": newValue.password
+                });
               } else {
                 throw new Error(`user ${newValue.id} does not exist`);
               }
-            }
           } else {
             throw new Error(
               `${newValue.email} is already in use by another user`,
@@ -117,19 +147,28 @@ export class UserService {
     }
   }
 
-  editUserPatch(newValue: any, id: string): CRUDReturn {
+  async editUserPatch(newValue: any, id: string): Promise<CRUDReturn> {
     try {
+      var result = await this.DB.collection('users').doc(id).get();
       var validBody: { valid: boolean; data: string } =
         Helper.validBody(newValue);
       if (validBody.valid) {
         if (!this.emailUpdate(newValue.email, id)) {
-          for (const [string, user] of this.users.entries()) {
-            if (this.users.has(id)) {
-              if (newValue.name != null) user['name'] = newValue.name;
-              if (newValue.age != null) user['age'] = newValue.age;
-              if (newValue.email != null) user['email'] = newValue.email;
-              if (newValue.password != null)
-                user['password'] = newValue.password;
+            if (result.exists) {
+              if (newValue.name != null) {
+                this.DB.collection("users").doc(id).update({
+                  "name": newValue.name
+                });
+              } 
+              if (newValue.age != null) { this.DB.collection("users").doc(id).update({
+                "age": newValue.age
+              });}
+              if (newValue.email != null) { this.DB.collection("users").doc(id).update({
+                "email": newValue.email
+              });}
+              if (newValue.password != null){ this.DB.collection("users").doc(id).update({
+                "password": newValue.password
+              });}
               return {
                 success: true,
                 data: this.users.get(id).toJson(),
@@ -137,7 +176,6 @@ export class UserService {
             } else {
               throw new Error(`user ${newValue.id} does not exist`);
             }
-          }
         } else {
           throw new Error(
             `${newValue.email} is already in use by another user`,
@@ -154,13 +192,13 @@ export class UserService {
     }
   }
 
-  deleteUser(credentials: any, id: string): CRUDReturn {
-    let match = false;
-    if (this.users.has(id)) {
-      this.users.delete(id);
+  async deleteUser(id: string): Promise<CRUDReturn> {
+    var result = await this.DB.collection('users').doc(id).get();
+    if (result.exists) {
+      this.DB.collection("users").doc(id).delete();
       return {
         success: true,
-        data: 'User successfuly deleted',
+        data: 'User successfully deleted',
       };
     } else
       return {
@@ -226,8 +264,9 @@ export class UserService {
     }
   }
 
-  saveToDB(user: User): boolean {
+ saveToDB(user: User): boolean {
     try {
+      this.DB.collection('users').doc().set(user.toJson());
       this.users.set(user.id, user);
       return this.users.has(user.id);
     } catch (error) {
@@ -247,6 +286,7 @@ export class UserService {
     }
     return false;
   }
+
 
   emailUpdate(email: string, id: string): boolean {
     for (const [string, user] of this.users.entries()) {

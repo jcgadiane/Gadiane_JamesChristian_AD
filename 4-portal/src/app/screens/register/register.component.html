@@ -1,0 +1,45 @@
+<div id="content">
+    <div class="card" style="width: 23.5rem">
+        <div class="card-header">MEMBER REGISTRATION</div>
+
+        <div class="card-body">
+            <form class="inputs" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+                <div class="col-sm-10">
+                    <input type="name" class="form-control" id="exampleFormControlInput1" placeholder="Juan De La Cruz"
+                        formControlName="fCName" />
+                    <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="21"
+                        formControlName="fCAge" />
+                    <input type="email" class="form-control" id="exampleFormControlInput1"
+                        placeholder="name@example.com" formControlName="fCEmail" />
+                    <input type="password" class="form-control" id="exampleFormControlInput1" placeholder="Password"
+                        formControlName="fCPassword" />
+                    <input type="password" class="form-control" id="exampleFormControlInput1"
+                        placeholder="Confirm Password" formControlName="fCPassword2" />
+                </div>
+                <p *ngIf="password.errors && password.touched">
+                    Password length should be atleast 8 characters
+                </p>
+                <p *ngIf="
+            f.fCPassword.value != f.fCPassword2.value && 
+            ((f.fCPassword.touched && f.fCPassword.dirty) && (f.fCPassword2.touched))
+          ">
+                    Passwords do not match
+                </p>
+
+                <div class="buttons">
+                    <button class="btn btn-primary" type="submit" [disabled]="!registerForm.valid">
+                        Create Account
+                    </button>
+                    <a class="btn btn-primary" (click)="nav('login')">Back to Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<footer>
+    <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05)">
+        <a href="facebook.com/"><img src="../assets/images/facebook.png" /></a>
+        <a href="twitter.com/"><img src="../assets/images/twitter.png" /></a>
+        <a href="instagram.com/"><img src="../assets/images/instagram.png" /></a>
+    </div>
+</footer>
